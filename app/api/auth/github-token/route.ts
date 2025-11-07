@@ -3,8 +3,43 @@ import admin from 'firebase-admin';
 import path from 'path';
 import fs from 'fs';
 
-// Firebase Admin 초기화
-if (!admin.apps.length) {
+// Firebase Admin 초기화 (런타임에만 실행)
+let isAdminInitialized = false;
+
+function initializeFirebaseAdmin() {
+  // 이미 초기화되었으면 스킵
+  if (isAdminInitialized || admin.apps.length > 0) {
+    return;
+  }
+
+  // 빌드 시점 체크: 환경 변수가 없으면 초기화하지 않음
+  if (!process.env.FIREBASE_PROJECT_ID && !process.env.FIREBASE_CLIENT_EMAIL && !process.env.FIREBASE_PRIVATE_KEY) {
+    // JSON 파일도 확인
+    const jsonFiles = [
+      path.join(process.cwd(), 'lib', 'firebase-service-account.json'),
+      path.join(process.cwd(), 'lib', 'serviceAccountKey.json'),
+      path.join(process.cwd(), 'firebase-service-account.json'),
+      path.join(process.cwd(), 'serviceAccountKey.json'),
+    ];
+
+    let hasJsonFile = false;
+    for (const filePath of jsonFiles) {
+      try {
+        if (fs.existsSync(filePath)) {
+          hasJsonFile = true;
+          break;
+        }
+      } catch {
+        // 파일 시스템 접근 실패 시 무시 (빌드 시점)
+      }
+    }
+
+    if (!hasJsonFile) {
+      // 환경 변수도 없고 JSON 파일도 없으면 초기화하지 않음
+      return;
+    }
+  }
+
   try {
     // 방법 1: 환경 변수 사용 (우선)
     if (process.env.FIREBASE_PROJECT_ID && process.env.FIREBASE_CLIENT_EMAIL && process.env.FIREBASE_PRIVATE_KEY) {
@@ -15,6 +50,9 @@ if (!admin.apps.length) {
           privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
         }),
       });
+      isAdminInitialized = true;
+      console.log('Firebase Admin 초기화 성공 (환경 변수 사용)');
+      return;
     } 
     // 방법 2: JSON 파일 직접 사용 (대안)
     else {
@@ -28,9 +66,13 @@ if (!admin.apps.length) {
 
       let serviceAccountPath: string | null = null;
       for (const filePath of jsonFiles) {
-        if (fs.existsSync(filePath)) {
-          serviceAccountPath = filePath;
-          break;
+        try {
+          if (fs.existsSync(filePath)) {
+            serviceAccountPath = filePath;
+            break;
+          }
+        } catch {
+          // 파일 시스템 접근 실패 시 무시
         }
       }
 
@@ -39,13 +81,16 @@ if (!admin.apps.length) {
         admin.initializeApp({
           credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
         });
+        isAdminInitialized = true;
         console.log('Firebase Admin 초기화 성공 (JSON 파일 사용)');
-      } else {
-        throw new Error('Firebase Admin SDK 설정을 찾을 수 없습니다. 환경 변수 또는 JSON 파일이 필요합니다.');
+        return;
       }
     }
   } catch (error) {
-    console.error('Firebase Admin 초기화 실패:', error);
+    // 빌드 시점에는 에러를 throw하지 않음
+    if (process.env.NODE_ENV !== 'production' || admin.apps.length === 0) {
+      console.error('Firebase Admin 초기화 실패:', error);
+    }
   }
 }
 
@@ -88,6 +133,20 @@ async function getGitHubEmails(githubToken: string) {
 }
 
 export async function POST(request: NextRequest) {
+  // 런타임에 Firebase Admin 초기화 시도
+  initializeFirebaseAdmin();
+
+  // Firebase Admin이 초기화되지 않았으면 에러 반환
+  if (!admin.apps.length) {
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Firebase Admin SDK가 설정되지 않았습니다. 환경 변수를 확인해주세요.',
+      },
+      { status: 500 }
+    );
+  }
+
   try {
     const { githubToken } = await request.json();
 

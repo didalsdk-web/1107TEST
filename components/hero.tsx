@@ -79,6 +79,15 @@ export default function Hero() {
 
   useEffect(() => {
     const updateStatistics = async () => {
+      // 클라이언트 사이드에서만 실행
+      if (typeof window === 'undefined') return
+      
+      // db가 초기화되지 않았으면 기본값 사용
+      if (!db) {
+        setLoading(false)
+        return
+      }
+
       try {
         const statsRef = doc(db, 'statistics', 'counters')
         const statsSnap = await getDoc(statsRef)
