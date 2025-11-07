@@ -8,14 +8,20 @@ import {
   signOut,
   onAuthStateChanged
 } from 'firebase/auth'
-import { auth } from '@/lib/firebase'
+import { getAuthInstance } from '@/lib/firebase'
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const authInstance = getAuthInstance()
+    if (!authInstance) {
+      setLoading(false)
+      return
+    }
+
+    const unsubscribe = onAuthStateChanged(authInstance, (user) => {
       setUser(user)
       setLoading(false)
     })
@@ -24,8 +30,16 @@ export function useAuth() {
   }, [])
 
   const login = async (email: string, password: string) => {
+    const authInstance = getAuthInstance()
+    if (!authInstance) {
+      return { 
+        success: false, 
+        error: 'Firebase가 초기화되지 않았습니다.' 
+      }
+    }
+
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password)
+      const userCredential = await signInWithEmailAndPassword(authInstance, email, password)
       return { success: true, user: userCredential.user }
     } catch (error: any) {
       return { 
@@ -36,8 +50,16 @@ export function useAuth() {
   }
 
   const signup = async (email: string, password: string) => {
+    const authInstance = getAuthInstance()
+    if (!authInstance) {
+      return { 
+        success: false, 
+        error: 'Firebase가 초기화되지 않았습니다.' 
+      }
+    }
+
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password)
+      const userCredential = await createUserWithEmailAndPassword(authInstance, email, password)
       return { success: true, user: userCredential.user }
     } catch (error: any) {
       let errorMessage = '회원가입에 실패했습니다.'
@@ -58,13 +80,18 @@ export function useAuth() {
   }
 
   const logout = async () => {
+    const authInstance = getAuthInstance()
+    if (!authInstance) {
+      return { success: true }
+    }
+
     try {
-      await signOut(auth)
+      await signOut(authInstance)
       return { success: true }
     } catch (error: any) {
-      return { 
-        success: false, 
-        error: error.message || '로그아웃에 실패했습니다.' 
+      return {
+        success: false,
+        error: error.message || '로그아웃에 실패했습니다.'
       }
     }
   }

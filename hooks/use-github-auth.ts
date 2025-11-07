@@ -7,14 +7,20 @@ import {
   signOut,
   onAuthStateChanged
 } from 'firebase/auth'
-import { auth } from '@/lib/firebase'
+import { getAuthInstance } from '@/lib/firebase'
 
 export function useGitHubAuth() {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const authInstance = getAuthInstance()
+    if (!authInstance) {
+      setLoading(false)
+      return
+    }
+
+    const unsubscribe = onAuthStateChanged(authInstance, (user) => {
       setUser(user)
       setLoading(false)
     })
@@ -43,7 +49,15 @@ export function useGitHubAuth() {
       }
 
       // Firebase Custom Token으로 로그인
-      const userCredential = await signInWithCustomToken(auth, data.customToken)
+      const authInstance = getAuthInstance()
+      if (!authInstance) {
+        return {
+          success: false,
+          error: 'Firebase가 초기화되지 않았습니다.',
+        }
+      }
+
+      const userCredential = await signInWithCustomToken(authInstance, data.customToken)
       
       return {
         success: true,
@@ -58,8 +72,13 @@ export function useGitHubAuth() {
   }
 
   const logout = async () => {
+    const authInstance = getAuthInstance()
+    if (!authInstance) {
+      return { success: true }
+    }
+
     try {
-      await signOut(auth)
+      await signOut(authInstance)
       return { success: true }
     } catch (error: any) {
       return {

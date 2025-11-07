@@ -13,7 +13,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
-import { db } from '@/lib/firebase'
+import { getDbInstance } from '@/lib/firebase'
 
 const teamMembers = [
   {
@@ -83,7 +83,17 @@ export default function CTA() {
 
     try {
       // Firestore에 데이터 저장
-      const docRef = await addDoc(collection(db, 'contacts'), {
+      const dbInstance = getDbInstance()
+      if (!dbInstance) {
+        setSubmitMessage({ 
+          type: 'error', 
+          text: '데이터베이스 연결에 실패했습니다. 잠시 후 다시 시도해주세요.' 
+        })
+        setIsSubmitting(false)
+        return
+      }
+
+      const docRef = await addDoc(collection(dbInstance, 'contacts'), {
         name: formData.name,
         contact: formData.contact,
         email: formData.email,

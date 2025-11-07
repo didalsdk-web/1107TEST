@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react"
 import { ArrowRight } from "lucide-react"
 import { doc, getDoc, setDoc, updateDoc, increment } from 'firebase/firestore'
-import { db } from '@/lib/firebase'
+import { getDbInstance } from '@/lib/firebase'
 
 // 카운트업 애니메이션 훅
 function useCountUp(targetValue: number, duration: number = 800) {
@@ -83,13 +83,14 @@ export default function Hero() {
       if (typeof window === 'undefined') return
       
       // db가 초기화되지 않았으면 기본값 사용
-      if (!db) {
+      const dbInstance = getDbInstance()
+      if (!dbInstance) {
         setLoading(false)
         return
       }
 
       try {
-        const statsRef = doc(db, 'statistics', 'counters')
+        const statsRef = doc(dbInstance, 'statistics', 'counters')
         const statsSnap = await getDoc(statsRef)
 
         if (statsSnap.exists()) {
