@@ -172,11 +172,11 @@ export default function CTA() {
         </div>
       </section>
 
-      {/* 연락하기 섹션 */}
+      {/* 문의하기 섹션 */}
       <section id="contact" className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold text-primary mb-4">연락하기</h2>
+            <h2 className="text-4xl md:text-5xl font-bold text-primary mb-4">문의하기</h2>
             <p className="text-xl text-white/80">
               프로젝트에 대해 이야기를 나눠보세요
             </p>
