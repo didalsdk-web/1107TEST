@@ -160,7 +160,15 @@ export default function Hero() {
               프로젝트 보기
               <ArrowRight className="w-5 h-5" />
             </button>
-            <button className="px-8 py-4 border-2 border-white text-white font-medium rounded-lg hover:bg-white/10 transition">
+            <button
+              onClick={() => {
+                const contactSection = document.getElementById('contact')
+                if (contactSection) {
+                  contactSection.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                }
+              }}
+              className="px-8 py-4 border-2 border-white text-white font-medium rounded-lg hover:bg-white/10 transition"
+            >
               문의하기
             </button>
           </div>
