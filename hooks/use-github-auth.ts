@@ -14,18 +14,32 @@ export function useGitHubAuth() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const authInstance = getAuthInstance()
-    if (!authInstance) {
+    // 클라이언트 사이드에서만 실행
+    if (typeof window === 'undefined') {
       setLoading(false)
       return
     }
 
-    const unsubscribe = onAuthStateChanged(authInstance, (user) => {
-      setUser(user)
+    const authInstance = getAuthInstance()
+    if (!authInstance) {
       setLoading(false)
-    })
+      if (process.env.NODE_ENV === 'development') {
+        console.warn('Firebase Auth가 초기화되지 않았습니다. 환경 변수를 확인해주세요.')
+      }
+      return
+    }
 
-    return () => unsubscribe()
+    try {
+      const unsubscribe = onAuthStateChanged(authInstance, (user) => {
+        setUser(user)
+        setLoading(false)
+      })
+
+      return () => unsubscribe()
+    } catch (error) {
+      console.error('Auth state 변경 감지 오류:', error)
+      setLoading(false)
+    }
   }, [])
 
   const loginWithGitHubToken = async (githubToken: string) => {

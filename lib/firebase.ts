@@ -14,8 +14,16 @@ const firebaseConfig = {
 
 // Firebase 앱 초기화 함수 (런타임에 호출)
 function getFirebaseApp(): FirebaseApp | null {
+  // 클라이언트 사이드에서만 실행
+  if (typeof window === 'undefined') {
+    return null
+  }
+
   // 환경 변수 체크
   if (!process.env.NEXT_PUBLIC_FIREBASE_API_KEY || !process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID) {
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('Firebase 환경 변수가 설정되지 않았습니다. NEXT_PUBLIC_FIREBASE_* 변수를 확인해주세요.')
+    }
     return null
   }
 
