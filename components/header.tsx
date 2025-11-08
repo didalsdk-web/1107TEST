@@ -14,7 +14,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { useAuth } from "@/hooks/use-auth"
-import { useGitHubAuth } from "@/hooks/use-github-auth"
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -24,16 +23,10 @@ export default function Header() {
     email: "",
     password: "",
   })
-  const [githubToken, setGithubToken] = useState("")
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
 
   const { user, login, signup, logout, isAuthenticated } = useAuth()
-  const { loginWithGitHubToken: loginWithGitHub, user: githubUser } = useGitHubAuth()
-  
-  // GitHub 사용자 또는 일반 사용자
-  const currentUser = githubUser || user
-  const isUserAuthenticated = !!currentUser
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -88,35 +81,11 @@ export default function Header() {
     setLoading(false)
   }
 
-  const handleGitHubLogin = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError("")
-    setLoading(true)
-
-    if (!githubToken) {
-      setError("GitHub 토큰을 입력해주세요.")
-      setLoading(false)
-      return
-    }
-
-    const result = await loginWithGitHub(githubToken)
-    
-    if (result.success) {
-      setIsAuthOpen(false)
-      setGithubToken("") // 보안을 위해 토큰 제거
-    } else {
-      setError(result.error || "GitHub 로그인에 실패했습니다.")
-    }
-    
-    setLoading(false)
-  }
-
   const handleAuthOpen = () => {
     setIsAuthOpen(true)
     setActiveTab("login")
     setError("")
     setFormData({ email: "", password: "" })
-    setGithubToken("")
   }
 
   const handleLogout = async () => {
@@ -144,19 +113,19 @@ export default function Header() {
             <Link href="#contact" className="text-sm text-foreground hover:text-primary transition">
               문의
             </Link>
-            {isUserAuthenticated ? (
-              <div className="flex items-center gap-4">
-                <span className="text-sm text-foreground">
-                  {currentUser?.email || currentUser?.displayName}
-                </span>
-                <button
-                  onClick={handleLogout}
-                  className="text-sm text-foreground hover:text-primary transition px-3 py-1 rounded-md hover:bg-white/10"
-                >
-                  로그아웃
-                </button>
-              </div>
-            ) : (
+                   {isAuthenticated ? (
+                     <div className="flex items-center gap-4">
+                       <span className="text-sm text-foreground">
+                         {user?.email || user?.displayName}
+                       </span>
+                       <button
+                         onClick={handleLogout}
+                         className="text-sm text-foreground hover:text-primary transition px-3 py-1 rounded-md hover:bg-white/10"
+                       >
+                         로그아웃
+                       </button>
+                     </div>
+                   ) : (
               <button
                 onClick={handleAuthOpen}
                 className="text-sm text-white bg-primary hover:bg-primary/90 transition px-4 py-2 rounded-md"
@@ -185,19 +154,19 @@ export default function Header() {
             <Link href="#contact" className="text-sm text-foreground hover:text-primary transition">
               문의
             </Link>
-            {isUserAuthenticated ? (
-              <div className="flex flex-col gap-2">
-                <span className="text-sm text-foreground">
-                  {currentUser?.email || currentUser?.displayName}
-                </span>
-                <button
-                  onClick={handleLogout}
-                  className="text-sm text-foreground hover:text-primary transition text-left"
-                >
-                  로그아웃
-                </button>
-              </div>
-            ) : (
+                   {isAuthenticated ? (
+                     <div className="flex flex-col gap-2">
+                       <span className="text-sm text-foreground">
+                         {user?.email || user?.displayName}
+                       </span>
+                       <button
+                         onClick={handleLogout}
+                         className="text-sm text-foreground hover:text-primary transition text-left"
+                       >
+                         로그아웃
+                       </button>
+                     </div>
+                   ) : (
               <button
                 onClick={() => {
                   handleAuthOpen()
@@ -219,7 +188,7 @@ export default function Header() {
             <DialogTitle className="text-2xl font-bold text-white">로그인 / 회원가입</DialogTitle>
           </DialogHeader>
           <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-4">
-            <TabsList className="grid w-full grid-cols-3 bg-[#2c2c54]">
+            <TabsList className="grid w-full grid-cols-2 bg-[#2c2c54]">
               <TabsTrigger 
                 value="login" 
                 className="data-[state=active]:bg-primary data-[state=active]:text-white data-[state=inactive]:bg-transparent data-[state=inactive]:text-white/60 data-[state=inactive]:hover:text-white data-[state=inactive]:hover:bg-white/10 transition-colors"
@@ -231,12 +200,6 @@ export default function Header() {
                 className="data-[state=active]:bg-primary data-[state=active]:text-white data-[state=inactive]:bg-transparent data-[state=inactive]:text-white/60 data-[state=inactive]:hover:text-white data-[state=inactive]:hover:bg-white/10 transition-colors"
               >
                 회원가입
-              </TabsTrigger>
-              <TabsTrigger 
-                value="github" 
-                className="data-[state=active]:bg-primary data-[state=active]:text-white data-[state=inactive]:bg-transparent data-[state=inactive]:text-white/60 data-[state=inactive]:hover:text-white data-[state=inactive]:hover:bg-white/10 transition-colors"
-              >
-                GitHub
               </TabsTrigger>
             </TabsList>
 
@@ -338,43 +301,6 @@ export default function Header() {
               </form>
             </TabsContent>
 
-            <TabsContent value="github" className="mt-4">
-              <form onSubmit={handleGitHubLogin} className="space-y-4">
-                <div>
-                  <Label htmlFor="github-token" className="text-white mb-2 block">
-                    GitHub Personal Access Token
-                  </Label>
-                  <Input
-                    id="github-token"
-                    type="password"
-                    placeholder="ghp_xxxxxxxxxxxx"
-                    value={githubToken}
-                    onChange={(e) => {
-                      setGithubToken(e.target.value)
-                      setError("")
-                    }}
-                    className="bg-[#1a1a2e] border-[#3a3a5e] text-white"
-                    disabled={loading}
-                  />
-                  <p className="text-xs text-white/50 mt-2">
-                    GitHub Settings → Developer settings → Personal access tokens → Tokens (classic)에서 생성
-                  </p>
-                  <p className="text-xs text-white/50 mt-1">
-                    필요한 권한: read:user, user:email
-                  </p>
-                </div>
-                {error && activeTab === "github" && (
-                  <div className="text-red-400 text-sm">{error}</div>
-                )}
-                <Button
-                  type="submit"
-                  className="w-full bg-primary text-white hover:opacity-90"
-                  disabled={loading}
-                >
-                  {loading ? "로그인 중..." : "GitHub로 로그인"}
-                </Button>
-              </form>
-            </TabsContent>
           </Tabs>
         </DialogContent>
       </Dialog>
