@@ -72,8 +72,10 @@
     "tw-animate-css": "1.3.3",
     "typescript": "^5"
   },
-  "resolutions": {
-    "vaul/react": "^19.2.0",
-    "vaul/react-dom": "^19.2.0"
+  "pnpm": {
+    "overrides": {
+      "vaul>react": "$react",
+      "vaul>react-dom": "$react-dom"
+    }
   }
 }
