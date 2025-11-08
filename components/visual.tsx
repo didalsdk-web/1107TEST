@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { cn } from "@/lib/utils"
 
 const visualItems = [
   {
@@ -56,7 +57,7 @@ export default function Visual() {
                 <TabsTrigger
                   key={item.id}
                   value={item.id}
-                  className="data-[state=active]:bg-primary data-[state=active]:text-white data-[state=inactive]:bg-transparent data-[state=inactive]:text-white/60 data-[state=inactive]:hover:text-white data-[state=inactive]:hover:bg-white/10 transition-colors"
+                  className="data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-primary/50 data-[state=active]:ring-2 data-[state=active]:ring-primary/30 data-[state=active]:ring-offset-2 data-[state=active]:ring-offset-[#2c2c54] data-[state=inactive]:bg-transparent data-[state=inactive]:text-white/60 data-[state=inactive]:hover:text-white data-[state=inactive]:hover:bg-white/10 transition-all duration-300"
                 >
                   <span className="mr-2">{item.icon}</span>
                   {item.title}

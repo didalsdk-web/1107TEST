@@ -27,8 +27,11 @@ const services = [
 
 export default function Services() {
   return (
-    <section id="services" className="py-20 bg-[#2c2c54]/50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="services" className="py-20 relative overflow-hidden">
+      {/* 위에서 아래로 그라데이션 배경 */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#1a1a2e] via-[#2c2c54] to-[#3a3a5e]" />
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="max-w-2xl mb-12">
           <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">제공하는 서비스</h2>
           <p className="text-xl text-muted-foreground">
@@ -42,7 +45,7 @@ export default function Services() {
             return (
               <div
                 key={index}
-                className="p-8 bg-background border border-border rounded-lg hover:shadow-lg hover:border-primary/50 transition duration-300 text-center"
+                className="p-8 bg-background border border-border rounded-lg hover:shadow-lg hover:shadow-primary/50 hover:border-primary/50 hover:ring-2 hover:ring-primary/30 hover:ring-offset-2 transition-all duration-300 text-center cursor-pointer active:scale-95"
               >
                 <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4 mx-auto">
                   <Icon className="w-6 h-6 text-primary" />
