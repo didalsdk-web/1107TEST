@@ -473,6 +473,9 @@ export default function CTA() {
             className="max-w-[600px] w-[90vw] max-h-[90vh] overflow-y-auto p-0"
             showCloseButton={false}
           >
+            <DialogHeader className="sr-only">
+              <DialogTitle>{teamMembers[selectedMember].name} - {teamMembers[selectedMember].role}</DialogTitle>
+            </DialogHeader>
             <div className="w-full flex items-center justify-center py-0 px-0 bg-[#1a1a2e]">
               <img
                 src={teamMembers[selectedMember].modalImage}

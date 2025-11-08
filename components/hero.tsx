@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react"
 import { ArrowRight } from "lucide-react"
 import { doc, getDoc, setDoc, updateDoc, increment } from 'firebase/firestore'
 import { getDbInstance } from '@/lib/firebase'
+import { Spotlight } from "@/components/ui/spotlight"
 
 // 카운트업 애니메이션 훅
 function useCountUp(targetValue: number, duration: number = 800) {
@@ -143,6 +144,7 @@ export default function Hero() {
   }, [])
   return (
     <section className="min-h-screen flex flex-col items-center justify-center pt-20 pb-20 relative overflow-hidden">
+      <Spotlight className="-top-40 left-0 md:left-60 md:-top-20" fill="white" />
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 z-10 text-center">
         <div className="space-y-8 mb-16">
           <h1 className="text-5xl md:text-7xl font-bold leading-tight">
