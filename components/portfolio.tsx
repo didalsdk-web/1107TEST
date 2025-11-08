@@ -1,5 +1,9 @@
 "use client"
 
+import { Calendar, Code, FileText, User, Clock, Palette, Smartphone } from "lucide-react"
+import RadialOrbitalTimeline from "@/components/ui/radial-orbital-timeline"
+import type { TimelineItem } from "@/components/ui/radial-orbital-timeline"
+
 const projects = [
   {
     title: "이커머스 플랫폼",
@@ -39,6 +43,81 @@ const projects = [
   },
 ]
 
+const timelineData: TimelineItem[] = [
+  {
+    id: 1,
+    title: projects[0].title,
+    date: "2024년 1월",
+    content: projects[0].description,
+    category: projects[0].category,
+    icon: Calendar,
+    relatedIds: [2],
+    status: "completed",
+    energy: 100,
+    image: projects[0].image,
+  },
+  {
+    id: 2,
+    title: projects[1].title,
+    date: "2024년 2월",
+    content: projects[1].description,
+    category: projects[1].category,
+    icon: Palette,
+    relatedIds: [1, 3],
+    status: "completed",
+    energy: 90,
+    image: projects[1].image,
+  },
+  {
+    id: 3,
+    title: projects[2].title,
+    date: "2024년 3월",
+    content: projects[2].description,
+    category: projects[2].category,
+    icon: Code,
+    relatedIds: [2, 4],
+    status: "in-progress",
+    energy: 75,
+    image: projects[2].image,
+  },
+  {
+    id: 4,
+    title: projects[3].title,
+    date: "2024년 4월",
+    content: projects[3].description,
+    category: projects[3].category,
+    icon: User,
+    relatedIds: [3, 5],
+    status: "pending",
+    energy: 40,
+    image: projects[3].image,
+  },
+  {
+    id: 5,
+    title: projects[4].title,
+    date: "2024년 5월",
+    content: projects[4].description,
+    category: projects[4].category,
+    icon: Clock,
+    relatedIds: [4, 6],
+    status: "pending",
+    energy: 30,
+    image: projects[4].image,
+  },
+  {
+    id: 6,
+    title: projects[5].title,
+    date: "2024년 6월",
+    content: projects[5].description,
+    category: projects[5].category,
+    icon: Smartphone,
+    relatedIds: [5],
+    status: "pending",
+    energy: 10,
+    image: projects[5].image,
+  },
+]
+
 export default function Portfolio() {
   return (
     <section id="portfolio" className="py-20">
@@ -50,6 +129,12 @@ export default function Portfolio() {
           </p>
         </div>
 
+        {/* RadialOrbitalTimeline 추가 */}
+        <div className="mb-16 bg-[#2c2c54]/30 rounded-lg p-8 border border-[#3a3a5e]">
+          <RadialOrbitalTimeline timelineData={timelineData} />
+        </div>
+
+        {/* 기존 프로젝트 그리드 */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {projects.map((project, index) => (
             <div key={index} className="group relative overflow-hidden rounded-lg bg-muted">
