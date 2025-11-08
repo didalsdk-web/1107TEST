@@ -58,10 +58,24 @@ function getFirebaseApp(): FirebaseApp | null {
   try {
     if (getApps().length === 0) {
       // 모든 필수 환경 변수 확인
-      if (!authDomain || !storageBucket || !messagingSenderId || !appId) {
+      const missingVars: string[] = []
+      if (!apiKey) missingVars.push('NEXT_PUBLIC_FIREBASE_API_KEY')
+      if (!authDomain) missingVars.push('NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN')
+      if (!projectId) missingVars.push('NEXT_PUBLIC_FIREBASE_PROJECT_ID')
+      if (!storageBucket) missingVars.push('NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET')
+      if (!messagingSenderId) missingVars.push('NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID')
+      if (!appId) missingVars.push('NEXT_PUBLIC_FIREBASE_APP_ID')
+
+      if (missingVars.length > 0) {
         if (!hasLoggedEnvError) {
           hasLoggedEnvError = true
-          console.error('❌ Firebase 환경 변수가 불완전합니다. 모든 필수 변수를 설정해주세요.')
+          console.error('❌ Firebase 환경 변수가 불완전합니다.')
+          console.error('누락된 변수:', missingVars)
+          console.error('Vercel Dashboard → Settings → Environment Variables에서 다음 변수들을 설정해주세요:')
+          missingVars.forEach((varName, index) => {
+            console.error(`   ${index + 1}. ${varName}`)
+          })
+          console.error('⚠️ 환경 변수 설정 후 반드시 재배포가 필요합니다.')
         }
         return null
       }
