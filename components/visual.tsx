@@ -57,14 +57,16 @@ export default function Visual() {
                 <TabsTrigger
                   key={item.id}
                   value={item.id}
-                  className="relative data-[state=active]:bg-gradient-to-br data-[state=active]:from-[#6a5acd] data-[state=active]:via-[#8a7be2] data-[state=active]:to-[#aa9bf2] data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-purple-500/50 data-[state=active]:ring-2 data-[state=active]:ring-purple-400/30 data-[state=active]:ring-offset-2 data-[state=active]:ring-offset-[#2c2c54] data-[state=inactive]:bg-[#3a3a5e]/60 data-[state=inactive]:text-white/70 data-[state=inactive]:hover:text-white data-[state=inactive]:hover:bg-[#4a4a7e]/60 transition-all duration-300"
+                  className="relative data-[state=active]:bg-gradient-to-br data-[state=active]:from-[#6a5acd] data-[state=active]:via-[#8a7be2] data-[state=active]:to-[#aa9bf2] data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-purple-500/50 data-[state=active]:ring-2 data-[state=active]:ring-purple-400/30 data-[state=active]:ring-offset-2 data-[state=active]:ring-offset-[#2c2c54] data-[state=inactive]:bg-[#3a3a5e]/60 data-[state=inactive]:text-white/70 data-[state=inactive]:hover:text-white data-[state=inactive]:hover:bg-[#4a4a7e]/60 transition-all duration-300 py-4"
                 >
                   {/* 하단 라이트 효과 - 활성 탭에만 표시 */}
                   {activeTab === item.id && (
                     <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-purple-400/80 to-transparent animate-pulse" />
                   )}
-                  <span className="mr-2 relative z-10">{item.icon}</span>
-                  <span className="relative z-10">{item.title}</span>
+                  <div className="flex flex-col items-center gap-2 relative z-10">
+                    <span className="text-2xl" style={{ fontSize: 'calc(1.875rem * 0.85)' }}>{item.icon}</span>
+                    <span className="text-lg font-bold" style={{ fontSize: 'calc(1.25rem * 0.85)' }}>{item.title}</span>
+                  </div>
                 </TabsTrigger>
               ))}
             </TabsList>
@@ -92,22 +94,6 @@ export default function Visual() {
               </TabsContent>
             ))}
           </Tabs>
-        </div>
-
-        {/* 추가 비주얼 요소 */}
-        <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
-          {visualItems.map((item, index) => (
-            <div
-              key={item.id}
-              className={`p-6 rounded-lg bg-[#2c2c54]/50 border border-[#3a3a5e] hover:border-primary/50 transition-all duration-300 ${
-                activeTab === item.id ? "border-primary scale-105" : ""
-              }`}
-            >
-              <div className="text-3xl mb-3">{item.icon}</div>
-              <h3 className="text-xl font-bold text-foreground mb-2">{item.title}</h3>
-              <p className="text-sm text-muted-foreground">{item.description}</p>
-            </div>
-          ))}
         </div>
       </div>
     </section>

@@ -37,9 +37,15 @@ export default function RadialOrbitalTimeline({
     y: 0,
   })
   const [activeNodeId, setActiveNodeId] = useState<number | null>(null)
+  const [isMounted, setIsMounted] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
   const orbitRef = useRef<HTMLDivElement>(null)
   const nodeRefs = useRef<Record<number, HTMLDivElement | null>>({})
+
+  // 클라이언트에서만 마운트되도록 처리 (hydration mismatch 방지)
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
 
   const handleContainerClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === containerRef.current || e.target === orbitRef.current) {
@@ -153,6 +159,22 @@ export default function RadialOrbitalTimeline({
     }
   }
 
+  // 클라이언트에서만 렌더링 (hydration mismatch 방지)
+  if (!isMounted) {
+    return (
+      <div
+        className="w-full flex flex-col items-center justify-center overflow-hidden py-8"
+        style={{
+          background: "linear-gradient(135deg, #1a1a2e 0%, #2c2c54 50%, #3a3a5e 100%)",
+        }}
+      >
+        <div className="relative w-full max-w-4xl flex items-center justify-center" style={{ minHeight: '800px' }}>
+          <div className="text-white/50">Loading...</div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div
       className="w-full flex flex-col items-center justify-center overflow-hidden py-8"
@@ -190,9 +212,9 @@ export default function RadialOrbitalTimeline({
             const Icon = item.icon
 
             const nodeStyle = {
-              transform: `translate(${position.x}px, ${position.y}px)`,
+              transform: `translate(${Math.round(position.x * 100) / 100}px, ${Math.round(position.y * 100) / 100}px)`,
               zIndex: isExpanded ? 200 : position.zIndex,
-              opacity: isExpanded ? 1 : position.opacity,
+              opacity: isExpanded ? 1 : Math.round(position.opacity * 1000) / 1000,
             }
 
             return (
