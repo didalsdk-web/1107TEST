@@ -29,24 +29,29 @@ function getFirebaseApp(): FirebaseApp | null {
   const appId = process.env.NEXT_PUBLIC_FIREBASE_APP_ID
 
   if (!apiKey || !projectId) {
-    console.error('❌ Firebase 환경 변수가 설정되지 않았습니다.')
-    console.error('설정된 환경 변수:', {
-      hasApiKey: !!apiKey,
-      hasProjectId: !!projectId,
-      hasAuthDomain: !!authDomain,
-      hasStorageBucket: !!storageBucket,
-      hasMessagingSenderId: !!messagingSenderId,
-      hasAppId: !!appId,
-    })
-    console.error('Vercel Dashboard → Settings → Environment Variables에서 다음 변수들을 설정해주세요:')
-    console.error('- NEXT_PUBLIC_FIREBASE_API_KEY')
-    console.error('- NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN')
-    console.error('- NEXT_PUBLIC_FIREBASE_PROJECT_ID')
-    console.error('- NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET')
-    console.error('- NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID')
-    console.error('- NEXT_PUBLIC_FIREBASE_APP_ID')
-    console.error('- NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID')
-    console.error('환경 변수 설정 후 반드시 재배포가 필요합니다.')
+    // 환경 변수 오류는 한 번만 로그 출력
+    if (!hasLoggedEnvError) {
+      hasLoggedEnvError = true
+      console.error('❌ Firebase 환경 변수가 설정되지 않았습니다.')
+      console.error('설정된 환경 변수:', {
+        hasApiKey: !!apiKey,
+        hasProjectId: !!projectId,
+        hasAuthDomain: !!authDomain,
+        hasStorageBucket: !!storageBucket,
+        hasMessagingSenderId: !!messagingSenderId,
+        hasAppId: !!appId,
+      })
+      console.error('📋 Vercel Dashboard → Settings → Environment Variables에서 다음 변수들을 설정해주세요:')
+      console.error('   1. NEXT_PUBLIC_FIREBASE_API_KEY')
+      console.error('   2. NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN')
+      console.error('   3. NEXT_PUBLIC_FIREBASE_PROJECT_ID')
+      console.error('   4. NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET')
+      console.error('   5. NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID')
+      console.error('   6. NEXT_PUBLIC_FIREBASE_APP_ID')
+      console.error('   7. NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID')
+      console.error('⚠️ 환경 변수 설정 후 반드시 재배포가 필요합니다.')
+      console.error('💡 가이드: code/docs/vercel-environment-variables.md 파일 참고')
+    }
     return null
   }
 
@@ -54,7 +59,10 @@ function getFirebaseApp(): FirebaseApp | null {
     if (getApps().length === 0) {
       // 모든 필수 환경 변수 확인
       if (!authDomain || !storageBucket || !messagingSenderId || !appId) {
-        console.error('❌ Firebase 환경 변수가 불완전합니다. 모든 필수 변수를 설정해주세요.')
+        if (!hasLoggedEnvError) {
+          hasLoggedEnvError = true
+          console.error('❌ Firebase 환경 변수가 불완전합니다. 모든 필수 변수를 설정해주세요.')
+        }
         return null
       }
 
@@ -69,10 +77,18 @@ function getFirebaseApp(): FirebaseApp | null {
         measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID || '',
       }
       
-      console.log('✅ Firebase 초기화 시도 중...')
-      const app = initializeApp(config)
-      console.log('✅ Firebase 초기화 성공')
-      return app
+      try {
+        const app = initializeApp(config)
+        // 초기화 성공 시 플래그 리셋 (재시도 가능하도록)
+        hasLoggedEnvError = false
+        return app
+      } catch (initError: any) {
+        if (!hasLoggedEnvError) {
+          hasLoggedEnvError = true
+          console.error('❌ Firebase 초기화 실패:', initError.message)
+        }
+        throw initError
+      }
     } else {
       return getApps()[0]
     }
@@ -90,6 +106,9 @@ let app: FirebaseApp | null = null
 // auth와 db는 지연 초기화
 let authInstance: Auth | null = null
 let dbInstance: Firestore | null = null
+
+// 환경 변수 오류 로그를 한 번만 출력하기 위한 플래그
+let hasLoggedEnvError = false
 
 export function getAuthInstance(): Auth | null {
   if (authInstance) return authInstance
