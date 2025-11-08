@@ -48,7 +48,7 @@ export function useAuth() {
     if (!authInstance) {
       return { 
         success: false, 
-        error: 'Firebase가 초기화되지 않았습니다.' 
+        error: 'Firebase가 초기화되지 않았습니다. Vercel Dashboard에서 환경 변수를 확인하고 재배포해주세요.' 
       }
     }
 
@@ -68,7 +68,7 @@ export function useAuth() {
     if (!authInstance) {
       return { 
         success: false, 
-        error: 'Firebase가 초기화되지 않았습니다.' 
+        error: 'Firebase가 초기화되지 않았습니다. Vercel Dashboard에서 환경 변수를 확인하고 재배포해주세요.' 
       }
     }
 

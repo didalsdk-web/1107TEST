@@ -20,36 +20,65 @@ function getFirebaseApp(): FirebaseApp | null {
   }
 
   // 환경 변수 체크 (런타임에 확인)
-  const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY || 
-                 (typeof window !== 'undefined' ? (window as any).__NEXT_DATA__?.env?.NEXT_PUBLIC_FIREBASE_API_KEY : undefined)
-  const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 
-                    (typeof window !== 'undefined' ? (window as any).__NEXT_DATA__?.env?.NEXT_PUBLIC_FIREBASE_PROJECT_ID : undefined)
+  // Next.js는 NEXT_PUBLIC_* 변수를 빌드 시점에 번들에 포함시킵니다
+  const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY
+  const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID
+  const authDomain = process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
+  const storageBucket = process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
+  const messagingSenderId = process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
+  const appId = process.env.NEXT_PUBLIC_FIREBASE_APP_ID
 
   if (!apiKey || !projectId) {
-    if (process.env.NODE_ENV === 'development') {
-      console.warn('Firebase 환경 변수가 설정되지 않았습니다. NEXT_PUBLIC_FIREBASE_* 변수를 확인해주세요.')
-    }
+    console.error('❌ Firebase 환경 변수가 설정되지 않았습니다.')
+    console.error('설정된 환경 변수:', {
+      hasApiKey: !!apiKey,
+      hasProjectId: !!projectId,
+      hasAuthDomain: !!authDomain,
+      hasStorageBucket: !!storageBucket,
+      hasMessagingSenderId: !!messagingSenderId,
+      hasAppId: !!appId,
+    })
+    console.error('Vercel Dashboard → Settings → Environment Variables에서 다음 변수들을 설정해주세요:')
+    console.error('- NEXT_PUBLIC_FIREBASE_API_KEY')
+    console.error('- NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN')
+    console.error('- NEXT_PUBLIC_FIREBASE_PROJECT_ID')
+    console.error('- NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET')
+    console.error('- NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID')
+    console.error('- NEXT_PUBLIC_FIREBASE_APP_ID')
+    console.error('- NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID')
+    console.error('환경 변수 설정 후 반드시 재배포가 필요합니다.')
     return null
   }
 
   try {
     if (getApps().length === 0) {
+      // 모든 필수 환경 변수 확인
+      if (!authDomain || !storageBucket || !messagingSenderId || !appId) {
+        console.error('❌ Firebase 환경 변수가 불완전합니다. 모든 필수 변수를 설정해주세요.')
+        return null
+      }
+
       // 환경 변수를 다시 확인하여 동적으로 구성
       const config = {
         apiKey: apiKey,
-        authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || '',
+        authDomain: authDomain,
         projectId: projectId,
-        storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || '',
-        messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || '',
-        appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || '',
+        storageBucket: storageBucket,
+        messagingSenderId: messagingSenderId,
+        appId: appId,
         measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID || '',
       }
-      return initializeApp(config)
+      
+      console.log('✅ Firebase 초기화 시도 중...')
+      const app = initializeApp(config)
+      console.log('✅ Firebase 초기화 성공')
+      return app
     } else {
       return getApps()[0]
     }
   } catch (error: any) {
-    console.error('Firebase 초기화 오류:', error)
+    console.error('❌ Firebase 초기화 오류:', error)
+    console.error('오류 상세:', error.message)
     // 에러를 다시 throw하지 않고 null 반환하여 앱이 크래시되지 않도록 함
     return null
   }
