@@ -57,10 +57,14 @@ export default function Visual() {
                 <TabsTrigger
                   key={item.id}
                   value={item.id}
-                  className="data-[state=active]:bg-gradient-to-br data-[state=active]:from-[#6a5acd] data-[state=active]:via-[#8a7be2] data-[state=active]:to-[#aa9bf2] data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-purple-500/50 data-[state=active]:ring-2 data-[state=active]:ring-purple-400/30 data-[state=active]:ring-offset-2 data-[state=active]:ring-offset-[#2c2c54] data-[state=inactive]:bg-[#3a3a5e]/60 data-[state=inactive]:text-white/70 data-[state=inactive]:hover:text-white data-[state=inactive]:hover:bg-[#4a4a7e]/60 transition-all duration-300"
+                  className="relative data-[state=active]:bg-gradient-to-br data-[state=active]:from-[#6a5acd] data-[state=active]:via-[#8a7be2] data-[state=active]:to-[#aa9bf2] data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-purple-500/50 data-[state=active]:ring-2 data-[state=active]:ring-purple-400/30 data-[state=active]:ring-offset-2 data-[state=active]:ring-offset-[#2c2c54] data-[state=inactive]:bg-[#3a3a5e]/60 data-[state=inactive]:text-white/70 data-[state=inactive]:hover:text-white data-[state=inactive]:hover:bg-[#4a4a7e]/60 transition-all duration-300"
                 >
-                  <span className="mr-2">{item.icon}</span>
-                  {item.title}
+                  {/* 하단 라이트 효과 - 활성 탭에만 표시 */}
+                  {activeTab === item.id && (
+                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-purple-400/80 to-transparent animate-pulse" />
+                  )}
+                  <span className="mr-2 relative z-10">{item.icon}</span>
+                  <span className="relative z-10">{item.title}</span>
                 </TabsTrigger>
               ))}
             </TabsList>
