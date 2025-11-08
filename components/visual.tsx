@@ -52,12 +52,12 @@ export default function Visual() {
         <div className="max-w-4xl mx-auto">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             {/* GitHub 탭 제거 전 스타일 적용: 3개 탭, grid-cols-3, 동일한 스타일 */}
-            <TabsList className="grid w-full grid-cols-3 bg-[#2c2c54] mb-8">
+            <TabsList className="grid w-full grid-cols-3 bg-[#2c2c54]/50 border border-[#3a3a5e] mb-8 p-1 rounded-lg backdrop-blur-sm">
               {visualItems.map((item) => (
                 <TabsTrigger
                   key={item.id}
                   value={item.id}
-                  className="data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-primary/50 data-[state=active]:ring-2 data-[state=active]:ring-primary/30 data-[state=active]:ring-offset-2 data-[state=active]:ring-offset-[#2c2c54] data-[state=inactive]:bg-transparent data-[state=inactive]:text-white/60 data-[state=inactive]:hover:text-white data-[state=inactive]:hover:bg-white/10 transition-all duration-300"
+                  className="data-[state=active]:bg-gradient-to-br data-[state=active]:from-[#6a5acd] data-[state=active]:via-[#8a7be2] data-[state=active]:to-[#aa9bf2] data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-purple-500/50 data-[state=active]:ring-2 data-[state=active]:ring-purple-400/30 data-[state=active]:ring-offset-2 data-[state=active]:ring-offset-[#2c2c54] data-[state=inactive]:bg-[#3a3a5e]/60 data-[state=inactive]:text-white/70 data-[state=inactive]:hover:text-white data-[state=inactive]:hover:bg-[#4a4a7e]/60 transition-all duration-300"
                 >
                   <span className="mr-2">{item.icon}</span>
                   {item.title}

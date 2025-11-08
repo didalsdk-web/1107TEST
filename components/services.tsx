@@ -45,13 +45,13 @@ export default function Services() {
             return (
               <div
                 key={index}
-                className="p-8 bg-background border border-border rounded-lg hover:shadow-lg hover:shadow-primary/50 hover:border-primary/50 hover:ring-2 hover:ring-primary/30 hover:ring-offset-2 transition-all duration-300 text-center cursor-pointer active:scale-95"
+                className="p-8 bg-gradient-to-br from-[#3a3a5e]/60 via-[#4a4a7e]/60 to-[#5a5a9e]/60 border border-[#6a6aae]/30 rounded-lg hover:shadow-lg hover:shadow-primary/50 hover:border-primary/50 hover:ring-2 hover:ring-primary/30 hover:ring-offset-2 hover:from-[#4a4a7e]/80 hover:via-[#5a5a9e]/80 hover:to-[#6a6aae]/80 transition-all duration-300 text-center cursor-pointer active:scale-95 backdrop-blur-sm"
               >
-                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4 mx-auto">
-                  <Icon className="w-6 h-6 text-primary" />
+                <div className="w-12 h-12 bg-gradient-to-br from-[#6a5acd] via-[#8a7be2] to-[#aa9bf2] rounded-lg flex items-center justify-center mb-4 mx-auto shadow-lg shadow-purple-500/30">
+                  <Icon className="w-6 h-6 text-white" />
                 </div>
-                <h3 className="text-xl font-bold text-foreground mb-3">{service.title}</h3>
-                <p className="text-muted-foreground leading-relaxed">{service.description}</p>
+                <h3 className="text-xl font-bold text-white mb-3">{service.title}</h3>
+                <p className="text-white/80 leading-relaxed">{service.description}</p>
               </div>
             )
           })}
