@@ -1,3 +1,16 @@
+/**
+ * GitHub 인증 Hook (보관 중)
+ * 
+ * 이 파일은 나중에 GitHub 로그인 기능을 다시 활성화할 수 있도록 보관되어 있습니다.
+ * 
+ * 사용 방법:
+ * 1. components/header.tsx에서 import 주석 해제
+ * 2. GitHub 탭 UI 주석 해제
+ * 3. handleGitHubLogin 함수 주석 해제
+ * 
+ * 자세한 복구 가이드는 docs/github-auth-restore-guide.md를 참고하세요.
+ */
+
 "use client"
 
 import { useState, useEffect } from 'react'

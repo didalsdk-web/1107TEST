@@ -1,3 +1,16 @@
+/**
+ * GitHub 토큰 인증 API Route (보관 중)
+ * 
+ * 이 파일은 나중에 GitHub 로그인 기능을 다시 활성화할 수 있도록 보관되어 있습니다.
+ * 
+ * 이 API는 GitHub Personal Access Token을 받아서:
+ * 1. GitHub API에서 사용자 정보를 가져옵니다
+ * 2. Firebase Admin SDK로 Custom Token을 생성합니다
+ * 3. 클라이언트에서 이 Custom Token으로 로그인합니다
+ * 
+ * 자세한 복구 가이드는 docs/github-auth-restore-guide.md를 참고하세요.
+ */
+
 import { NextRequest, NextResponse } from 'next/server';
 import admin from 'firebase-admin';
 import path from 'path';
