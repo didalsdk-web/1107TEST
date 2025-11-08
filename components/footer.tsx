@@ -98,6 +98,20 @@ export default function Footer() {
           </div>
 
           <div className="border-t border-background/20 pt-8">
+            {/* 회사 정보 */}
+            <div className="mb-6 text-sm opacity-70 space-y-1">
+              <p className="font-semibold mb-3">회사 정보</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+                <p>회사명: 부스트캠프 경기지사</p>
+                <p>대표자명: 서배준</p>
+                <p>사업자등록번호: 7179-9109-00</p>
+                <p>통신판매등록번호: 45697513</p>
+                <p>연락처: 010-2474-8514</p>
+                <p>이메일: didalsdk@gmail.com</p>
+              </div>
+              <p className="mt-2">사업자 소재지: 서울 강남구 압구정로 11길 17 미성 1차 1004호</p>
+            </div>
+
             <div className="flex flex-col md:flex-row justify-between items-center text-sm opacity-60">
               <p>&copy; 2025 BOOSTCAMP. All rights reserved.</p>
               <div className="flex gap-6">
@@ -410,7 +424,7 @@ export default function Footer() {
             <section className="space-y-4">
               <h2 className="text-2xl font-semibold mt-8 mb-4">제1조(목적)</h2>
               <p className="leading-relaxed">
-                이 약관은 양민아(전자상거래 사업자)가 운영하는 부스트캠프 경기지사 사이버 몰(이하 &quot;몰&quot;이라 한다)에서 제공하는 인터넷 관련 서비스(이하 &quot;서비스&quot;라 한다)를 이용함에 있어 사이버 몰과 이용자의 권리/ 의무 및 책임사항을 규정함을 목적으로 합니다.
+                이 약관은 서배준(전자상거래 사업자)가 운영하는 부스트캠프 경기지사 사이버 몰(이하 &quot;몰&quot;이라 한다)에서 제공하는 인터넷 관련 서비스(이하 &quot;서비스&quot;라 한다)를 이용함에 있어 사이버 몰과 이용자의 권리/ 의무 및 책임사항을 규정함을 목적으로 합니다.
               </p>
               <p className="text-muted-foreground italic">
                 ※「PC통신, 무선 등을 이용하는 전자상거래에 대해서도 그 성질에 반하지 않는 한 이 약관을 준용합니다.」
