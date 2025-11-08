@@ -220,13 +220,22 @@ export default function Header() {
           </DialogHeader>
           <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-4">
             <TabsList className="grid w-full grid-cols-3 bg-[#2c2c54]">
-              <TabsTrigger value="login" className="data-[state=active]:bg-primary data-[state=active]:text-white">
+              <TabsTrigger 
+                value="login" 
+                className="data-[state=active]:bg-primary data-[state=active]:text-white data-[state=inactive]:bg-transparent data-[state=inactive]:text-white/60 data-[state=inactive]:hover:text-white data-[state=inactive]:hover:bg-white/10 transition-colors"
+              >
                 로그인
               </TabsTrigger>
-              <TabsTrigger value="signup" className="data-[state=active]:bg-primary data-[state=active]:text-white">
+              <TabsTrigger 
+                value="signup" 
+                className="data-[state=active]:bg-primary data-[state=active]:text-white data-[state=inactive]:bg-transparent data-[state=inactive]:text-white/60 data-[state=inactive]:hover:text-white data-[state=inactive]:hover:bg-white/10 transition-colors"
+              >
                 회원가입
               </TabsTrigger>
-              <TabsTrigger value="github" className="data-[state=active]:bg-primary data-[state=active]:text-white">
+              <TabsTrigger 
+                value="github" 
+                className="data-[state=active]:bg-primary data-[state=active]:text-white data-[state=inactive]:bg-transparent data-[state=inactive]:text-white/60 data-[state=inactive]:hover:text-white data-[state=inactive]:hover:bg-white/10 transition-colors"
+              >
                 GitHub
               </TabsTrigger>
             </TabsList>
