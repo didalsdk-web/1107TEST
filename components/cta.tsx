@@ -441,8 +441,12 @@ export default function CTA() {
                 </button>
               </div>
             </div>
-            <div className="w-full h-48 bg-muted rounded-lg flex items-center justify-center">
-              <p className="text-muted-foreground">지도가 여기에 표시됩니다</p>
+            <div className="w-full h-48 bg-[#2c2c54] rounded-lg overflow-hidden">
+              <img
+                src="/map.png.png"
+                alt="압구정로11길 17 위치 지도"
+                className="w-full h-full object-cover"
+              />
             </div>
             <div className="flex gap-2">
               <Button
