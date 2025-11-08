@@ -19,8 +19,13 @@ function getFirebaseApp(): FirebaseApp | null {
     return null
   }
 
-  // 환경 변수 체크
-  if (!process.env.NEXT_PUBLIC_FIREBASE_API_KEY || !process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID) {
+  // 환경 변수 체크 (런타임에 확인)
+  const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY || 
+                 (typeof window !== 'undefined' ? (window as any).__NEXT_DATA__?.env?.NEXT_PUBLIC_FIREBASE_API_KEY : undefined)
+  const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 
+                    (typeof window !== 'undefined' ? (window as any).__NEXT_DATA__?.env?.NEXT_PUBLIC_FIREBASE_PROJECT_ID : undefined)
+
+  if (!apiKey || !projectId) {
     if (process.env.NODE_ENV === 'development') {
       console.warn('Firebase 환경 변수가 설정되지 않았습니다. NEXT_PUBLIC_FIREBASE_* 변수를 확인해주세요.')
     }
@@ -29,12 +34,23 @@ function getFirebaseApp(): FirebaseApp | null {
 
   try {
     if (getApps().length === 0) {
-      return initializeApp(firebaseConfig)
+      // 환경 변수를 다시 확인하여 동적으로 구성
+      const config = {
+        apiKey: apiKey,
+        authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || '',
+        projectId: projectId,
+        storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || '',
+        messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || '',
+        appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || '',
+        measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID || '',
+      }
+      return initializeApp(config)
     } else {
       return getApps()[0]
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error('Firebase 초기화 오류:', error)
+    // 에러를 다시 throw하지 않고 null 반환하여 앱이 크래시되지 않도록 함
     return null
   }
 }
